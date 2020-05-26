@@ -24,6 +24,7 @@ S is just the Grover Diffusion operator: See  https://qiskit.org/textbook/ch-alg
 
 V is applying Pj to the jth state of the ancillary qubiit
 
+``` python
 def diffuser(circuit):
     """Apply inversion about the average step of Grover's algorithm."""
     qubits = circuit.qubits
@@ -41,5 +42,4 @@ def diffuser(circuit):
     for q in range(nqubits):
         circuit.x(q)
         circuit.h(q)
-
-
+```

@@ -1,5 +1,9 @@
 # qiskit
 
+Interesting literature:
+
+https://github.com/Qiskit/qiskit-tutorials/blob/9405254b38312771f8d5c2dd6f451cec35307995/tutorials/simulators/1_aer_provider.ipynb
+
 
 The algorithm can be found in the method.pdf
 
@@ -22,7 +26,7 @@ We need to create the S and V operator.
 
 S is just the Grover Diffusion operator: See  https://qiskit.org/textbook/ch-algorithms/grover.html
 
-V is applying Pj to the jth state of the ancillary qubiit
+V is applying Pj to the jth state of the ancillary qubit
 
 ``` python
 def diffuser(circuit):

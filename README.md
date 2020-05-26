@@ -26,7 +26,7 @@ We need to create the S and V operator.
 
 S is just the Grover Diffusion operator: See  https://qiskit.org/textbook/ch-algorithms/grover.html
 
-V is applying Pj to the jth state of the ancillary qubit
+V is applying Pj to the jth state of the ancillary qubit: if our physical system has 4 qubits, then a 16-dimensional vector describes the state. then V applies the P_j to the jth position in that state. So then 
 
 ``` python
 def diffuser(circuit):

@@ -28,6 +28,15 @@ S is just the Grover Diffusion operator: See  https://qiskit.org/textbook/ch-alg
 
 V is applying Pj to the jth state of the ancillary qubit: if our physical system has 4 qubits, then a 16-dimensional vector describes the state. then V applies the P_j to the jth position in that state. So then 
 
+
+
+TASKS WE CAN ALREADY DO
+
+Copying the Phase estimation code from https://qiskit.org/textbook/ch-algorithms/quantum-phase-estimation.html, and adapting it so such a way that it performs phase estimation on an ancillary register of 2 qubits, for some operator W that we specify later.
+
+Create the framework: start the circuit setup. So that means 4 physical qubits, 4 ancillary qubits and 2 phase estimation ancillary qubits.
+
+
 ``` python
 def diffuser(circuit):
     """Apply inversion about the average step of Grover's algorithm."""

@@ -54,13 +54,29 @@ def qft_dagger(circ, bits):
     """n-qubit QFTdagger the first n qubits in circ"""
     n = len(bits)
 
+<<<<<<< HEAD
     for i in range(n//2):
         circ.swap(bits[i], bits[n-i-1])
    
+=======
+    for qubit in range(n//2):
+        circ.swap(qubit, n-qubit-1)
+
+>>>>>>> 332f396644141c5d99968ff1e8f8661b739bf35a
     for j in range(n):
         for m in range(j):
             circ.cu1(-math.pi/float(2**(j-m)), bits[m], bits[j])
         circ.h(j)
+
+ampl_lst = [-0.81261, 0.171201, 0.16862325, -0.2227965, 0.171201, 0.12054625, 0.17434925, 0.04532175,
+0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868]
+
+array = np.array(ampl_lst)
+B = np.diag(array)
+
+B_op = Operator(B)
+print(B_op)
+
 
 
 # This assumes that the counting qubits are the first qubits in the circuit
@@ -95,7 +111,7 @@ phase_estimation(circ, main, counting, classical)
 circ.draw('mpl')
 plt.show()
 
-Hamiltonian = Operator([[-1.8310, 0.1813], [0.1813, -0.2537]])
+# Hamiltonian = Operator([[-1.8310, 0.1813], [0.1813, -0.2537]])
 # circ.unitary(Hamiltonian, q)
 #circ.append(Hamiltonian)
 #circ.decompose().draw()

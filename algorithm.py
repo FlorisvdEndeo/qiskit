@@ -100,7 +100,12 @@ main = QuantumRegister(4, 'main')
 aux = QuantumRegister(4, 'auxiliary')
 counting = QuantumRegister(2, 'counting')
 classical = ClassicalRegister(10, 'classical')
-circ = QuantumCircuit(main, aux, counting, classical)
+
+circ = HartreeFock(some_args_here)
+circ.add_register(aux)
+circ.add_register(counting)
+circ.add_register(classical)
+
 phase_estimation(circ, main, counting, classical)
 circ.draw('mpl')
 plt.show()

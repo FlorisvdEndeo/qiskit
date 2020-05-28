@@ -8,6 +8,7 @@
 #
 # from qiskit import *
 import numpy as np
+import math
 
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
 from qiskit import execute, BasicAer
@@ -49,47 +50,53 @@ pauli_specs = [
     'ZZZZ',
 ]
 
-def qft_dagger(circ, n):
+def qft_dagger(circ, bits):
     """n-qubit QFTdagger the first n qubits in circ"""
+    n = len(bits)
 
-    for qubit in range(n//2):
-        circ.swap(qubit, n-qubit-1)
+    for i in range(n//2):
+        circ.swap(bits[i], bits[n-i-1])
    
     for j in range(n):
         for m in range(j):
-            circ.cu1(-math.pi/float(2**(j-m)), m, j)
+            circ.cu1(-math.pi/float(2**(j-m)), bits[m], bits[j])
         circ.h(j)
 
 
 # This assumes that the counting qubits are the first qubits in the circuit
-def phase_estimation(circ, counting_qubits):
-    # Apply H-Gates to counting qubits
-    for qubit in range(counting_qubits):
-        circ.h(qubit)
+def phase_estimation(circ, main, counting, classical):
+    n = len(counting)
 
-    # Prepare our eigenstate |psi>
-    circ.x(counting_qubits)
+    # Apply H-Gates to counting qubits
+    circ.h(counting)
 
     # controlled-U operations
-    angle = 2*math.pi / (2**counting_qubits)
+    angle = 2*math.pi / (2**n)
     repetitions = 1
-    for bit in range(counting_qubits):
+    for bit in range(n):
         for i in range(repetitions):
-            circ.cu1(angle, bit, counting_qubits);
+            circ.cu1(angle, counting[bit], main[0]);
         repetitions *= 2
 
     # Do the inverse QFT:
-    qft_dagger(circ, counting_qubits)
+    qft_dagger(circ, counting)
 
     # Measure
-    for bit in range(counting_qubits):
-        circ.measure(bit,bit)
+    for bit in range(n):
+        circ.measure(counting[bit], classical[0])
 
+
+main = QuantumRegister(4, 'main')
+aux = QuantumRegister(4, 'auxiliary')
+counting = QuantumRegister(2, 'counting')
+classical = ClassicalRegister(10, 'classical')
+circ = QuantumCircuit(main, aux, counting, classical)
+phase_estimation(circ, main, counting, classical)
+circ.draw('mpl')
+plt.show()
 
 Hamiltonian = Operator([[-1.8310, 0.1813], [0.1813, -0.2537]])
-q = QuantumRegister(3, 'q')
-circ = QuantumCircuit(q)
-circ.unitary(Hamiltonian, q)
+# circ.unitary(Hamiltonian, q)
 #circ.append(Hamiltonian)
 #circ.decompose().draw()
 #Hamiltonian.IsUnitary()

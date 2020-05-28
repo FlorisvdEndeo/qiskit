@@ -54,15 +54,9 @@ def qft_dagger(circ, bits):
     """n-qubit QFTdagger the first n qubits in circ"""
     n = len(bits)
 
-<<<<<<< HEAD
     for i in range(n//2):
         circ.swap(bits[i], bits[n-i-1])
-   
-=======
-    for qubit in range(n//2):
-        circ.swap(qubit, n-qubit-1)
 
->>>>>>> 332f396644141c5d99968ff1e8f8661b739bf35a
     for j in range(n):
         for m in range(j):
             circ.cu1(-math.pi/float(2**(j-m)), bits[m], bits[j])

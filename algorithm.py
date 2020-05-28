@@ -77,7 +77,7 @@ def V():
 
 
 # This assumes that the counting qubits are the first qubits in the circuit
-def phase_estimation(circ, main, counting, classical):
+def phase_estimation(circ, target, counting, classical):
     n = len(counting)
 
     # Apply H-Gates to counting qubits
@@ -88,7 +88,7 @@ def phase_estimation(circ, main, counting, classical):
     repetitions = 1
     for bit in range(n):
         for i in range(repetitions):
-            circ.cu1(angle, counting[bit], main[0]);
+            circ.cu1(angle, counting[bit], target);
         repetitions *= 2
 
     # Do the inverse QFT:
@@ -111,7 +111,7 @@ circ.add_register(aux)
 circ.add_register(counting)
 circ.add_register(classical)
 
-phase_estimation(circ, main, counting, classical)
+phase_estimation(circ, main[0], counting, classical)
 circ.draw('mpl')
 plt.show()
 

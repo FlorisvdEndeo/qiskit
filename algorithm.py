@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 
 def parse_pauli_spec(spec):
     op = Operator(Pauli(label=spec[0]))
-    for i in range(1,4):
+    for i in enumerate(spec, 1):
         op = op.tensor(Pauli(label=spec[i]))
     return op
 
@@ -72,6 +72,9 @@ B_op = Operator(B)
 print(B_op)
 
 
+def V():
+    return parse_pauli_spec(''.join(pauli_specs))
+
 
 # This assumes that the counting qubits are the first qubits in the circuit
 def phase_estimation(circ, main, counting, classical):
@@ -100,6 +103,8 @@ main = QuantumRegister(4, 'main')
 aux = QuantumRegister(4, 'auxiliary')
 counting = QuantumRegister(2, 'counting')
 classical = ClassicalRegister(10, 'classical')
+
+
 
 circ = HartreeFock(some_args_here).construct_circuit('circuit', main)
 circ.add_register(aux)

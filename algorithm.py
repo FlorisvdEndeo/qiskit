@@ -99,7 +99,16 @@ def phase_estimation(circ, main, counting, classical):
         circ.measure(counting[bit], classical[0])
 
 
-main = QuantumRegister(4, 'main')
+def s_operator(circ, aux):
+    circ.h(aux)
+    circ.x(aux)
+    circ.h(aux[3])
+    circ.ccx(aux[0],aux[4],aux[3])
+    circ.ccx(aux[1],aux[3],aux[2])
+
+
+
+main = QuantumRegister(5, 'main')
 aux = QuantumRegister(4, 'auxiliary')
 counting = QuantumRegister(2, 'counting')
 classical = ClassicalRegister(10, 'classical')

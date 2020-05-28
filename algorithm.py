@@ -16,6 +16,7 @@ from qiskit.quantum_info.operators import Operator, Pauli
 from qiskit.quantum_info import process_fidelity
 
 from qiskit.extensions import RXGate, XGate, CXGate
+import matplotlib.pyplot as plt
 
 # One of the possible hamiltonians we could use:
 # HH2 = −0.81261I + 0.171201σ0z + 0.16862325σ1z − 0.2227965σ2z
@@ -23,6 +24,30 @@ from qiskit.extensions import RXGate, XGate, CXGate
 #      + 0.04532175σ2xσ1zσ0x + 0.04532175σ2yσ1zσ0y + 0.165868σ2zσ1zσ0z
 #      + 0.12054625σzσzσz − 0.2227965σzσzσz + 0.04532175σzσxσzσx
 #      + 0.04532175σ3zσ2yσ1zσ0y + 0.165868σ3zσ2zσ1zσ0z
+
+def parse_pauli_spec(spec):
+    op = Operator(Pauli(label=spec[0]))
+    for i in range(1,4):
+        op = op.tensor(Pauli(label=spec[i]))
+    return op
+
+pauli_specs = [
+    'IIII',
+    'ZIII',
+    'IZII',
+    'IIZI',
+    'ZZII',
+    'ZIZI',
+    'IZIZ',
+    'XZXI',
+    'YZYI',
+    'ZZZI',
+    'ZIZZ',
+    'IZZZ',
+    'XZXZ',
+    'YZYZ',
+    'ZZZZ',
+]
 
 def qft_dagger(circ, n):
     """n-qubit QFTdagger the first n qubits in circ"""

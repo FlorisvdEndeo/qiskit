@@ -9,12 +9,14 @@
 # from qiskit import *
 import numpy as np
 import math
+import pickle
 
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
-from qiskit import execute, BasicAer
+from qiskit import execute, BasicAer, plot_histogram
 from qiskit.compiler import transpile
 from qiskit.quantum_info.operators import Operator, Pauli
 from qiskit.quantum_info import process_fidelity
+from qiskit.providers import ibmq
 
 from qiskit.extensions import RXGate, XGate, CXGate
 from qiskit.chemistry.components.initial_states import HartreeFock
@@ -144,3 +146,13 @@ plt.show()
 #     for q in range(nqubits):
 #         circuit.x(q)
 #         circuit.h(q)
+
+### Running the code at IBM
+# backend = ibmq.least_busy()
+# qobj = assemble(transpile(circ, backend=backend), backend=backend)
+# job = backend.run(qobj)
+# result = job.result(refresh=True)
+# with open('results.pkl', 'wb') as f:
+#     pickle.dumps(result)
+# plot_histogram(result.get_counts())
+# plt.show()

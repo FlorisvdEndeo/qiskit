@@ -1,4 +1,3 @@
-# from typing import Union, List, Optional, Callable
 # from qiskit.providers import BaseBackend
 # from qiskit.aqua import QuantumInstance
 # from qiskit.aqua.algorithms import VQE
@@ -7,16 +6,6 @@
 # from qiskit.aqua.components.variational_forms import VariationalForm
 # from qiskit.aqua.utils.validation import validate_min, validate_in_set
 #
-#
-# import numpy as np
-#
-# from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
-# from qiskit import execute, BasicAer
-# from qiskit.compiler import transpile
-# from qiskit.quantum_info.operators import Operator, Pauli
-# from qiskit.quantum_info import process_fidelity
-#
-# from qiskit.extensions import RXGate, XGate, CXGate
 # from qiskit import *
 import numpy as np
 
@@ -28,13 +17,48 @@ from qiskit.quantum_info import process_fidelity
 
 from qiskit.extensions import RXGate, XGate, CXGate
 
-# HH2 =−0.81261I+0.171201σ0z+0.16862325σ1z−0.2227965σ2z
-# + 0.171201σ1zσ0z +0.12054625σ2zσ0z +0.17434925σ3zσ1z
-# + 0.04532175σ2xσ1zσ0x +0.04532175σ2yσ1zσ0y + 0.165868σ2zσ1zσ0z
-# + 0.12054625σzσzσz − 0.2227965σzσzσz + 0.04532175σzσxσzσx 320 321 3210
-# +0.04532175σ3zσ2yσ1zσ0y +0.165868σ3zσ2zσ1zσ0z
+# One of the possible hamiltonians we could use:
+# HH2 = −0.81261I + 0.171201σ0z + 0.16862325σ1z − 0.2227965σ2z
+#      + 0.171201σ1zσ0z + 0.12054625σ2zσ0z + 0.17434925σ3zσ1z
+#      + 0.04532175σ2xσ1zσ0x + 0.04532175σ2yσ1zσ0y + 0.165868σ2zσ1zσ0z
+#      + 0.12054625σzσzσz − 0.2227965σzσzσz + 0.04532175σzσxσzσx
+#      + 0.04532175σ3zσ2yσ1zσ0y + 0.165868σ3zσ2zσ1zσ0z
 
-#pauli_ops = [−0.81261*Operator(Pauli(label='I')), 0.171201*Operator(Pauli(label='Z')), 0.16862325*
+def qft_dagger(circ, n):
+    """n-qubit QFTdagger the first n qubits in circ"""
+
+    for qubit in range(n//2):
+        circ.swap(qubit, n-qubit-1)
+   
+    for j in range(n):
+        for m in range(j):
+            circ.cu1(-math.pi/float(2**(j-m)), m, j)
+        circ.h(j)
+
+
+# This assumes that the counting qubits are the first qubits in the circuit
+def phase_estimation(circ, counting_qubits):
+    # Apply H-Gates to counting qubits
+    for qubit in range(counting_qubits):
+        circ.h(qubit)
+
+    # Prepare our eigenstate |psi>
+    circ.x(counting_qubits)
+
+    # controlled-U operations
+    angle = 2*math.pi / (2**counting_qubits)
+    repetitions = 1
+    for bit in range(counting_qubits):
+        for i in range(repetitions):
+            circ.cu1(angle, bit, counting_qubits);
+        repetitions *= 2
+
+    # Do the inverse QFT:
+    qft_dagger(circ, counting_qubits)
+
+    # Measure
+    for bit in range(counting_qubits):
+        circ.measure(bit,bit)
 
 
 Hamiltonian = Operator([[-1.8310, 0.1813], [0.1813, -0.2537]])

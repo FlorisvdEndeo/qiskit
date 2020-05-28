@@ -17,7 +17,9 @@ from qiskit.quantum_info.operators import Operator, Pauli
 from qiskit.quantum_info import process_fidelity
 
 from qiskit.extensions import RXGate, XGate, CXGate
+from qiskit.chemistry.components.initial_states import HartreeFock
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import normalize
 
 # One of the possible hamiltonians we could use:
 # HH2 = −0.81261I + 0.171201σ0z + 0.16862325σ1z − 0.2227965σ2z
@@ -62,19 +64,6 @@ def qft_dagger(circ, bits):
             circ.cu1(-math.pi/float(2**(j-m)), bits[m], bits[j])
         circ.h(j)
 
-ampl_lst = [-0.81261, 0.171201, 0.16862325, -0.2227965, 0.171201, 0.12054625, 0.17434925, 0.04532175,
-0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868]
-
-
-array = np.array(ampl_lst)
-
-from sklearn.preprocessing import normalize
-narray = array / np.linalg.norm(array)
-
-B = np.diag(narray)
-
-B_op = Operator(B)
-
 
 # This assumes that the counting qubits are the first qubits in the circuit
 def phase_estimation(circ, main, counting, classical):
@@ -106,6 +95,14 @@ def s_operator(circ, aux):
     circ.ccx(aux[0],aux[4],aux[3])
     circ.ccx(aux[1],aux[3],aux[2])
 
+ampl_lst = [-0.81261, 0.171201, 0.16862325, -0.2227965, 0.171201, 0.12054625, 0.17434925, 0.04532175,
+0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868]
+
+
+array = np.array(ampl_lst)
+narray = array / np.linalg.norm(array)
+B = np.diag(narray)
+B_op = Operator(B)
 
 
 main = QuantumRegister(5, 'main')
@@ -113,7 +110,6 @@ aux = QuantumRegister(4, 'auxiliary')
 counting = QuantumRegister(2, 'counting')
 classical = ClassicalRegister(10, 'classical')
 
-from qiskit.chemistry.components.initial_states import HartreeFock
 circ = HartreeFock(2, 1, 'parity').construct_circuit('circuit', main)
 circ.add_register(aux)
 circ.add_register(counting)

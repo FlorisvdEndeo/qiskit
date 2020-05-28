@@ -54,6 +54,10 @@ pauli_specs = [
     'ZZZZ',
 ]
 
+
+
+
+
 def qft_dagger(circ, bits):
     """n-qubit QFTdagger the first n qubits in circ"""
     n = len(bits)
@@ -100,12 +104,12 @@ def s_operator(circ, aux):
 ampl_lst = [-0.81261, 0.171201, 0.16862325, -0.2227965, 0.171201, 0.12054625, 0.17434925, 0.04532175,
 0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868]
 
-
-array = np.array(ampl_lst)
-narray = array / np.linalg.norm(array)
-B = np.diag(narray)
 B_op = Operator(B)
 
+array = np.array(ampl_lst)
+
+
+B = np.diag(array)
 
 main = QuantumRegister(5, 'main')
 aux = QuantumRegister(4, 'auxiliary')

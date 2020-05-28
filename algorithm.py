@@ -101,7 +101,7 @@ aux = QuantumRegister(4, 'auxiliary')
 counting = QuantumRegister(2, 'counting')
 classical = ClassicalRegister(10, 'classical')
 
-circ = HartreeFock(some_args_here)
+circ = HartreeFock(some_args_here).construct_circuit('circuit', main)
 circ.add_register(aux)
 circ.add_register(counting)
 circ.add_register(classical)

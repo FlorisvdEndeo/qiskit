@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 
 def parse_pauli_spec(spec):
     op = Operator(Pauli(label=spec[0]))
-    for i in enumerate(spec, 1):
+    for i in range(1,4):
         op = op.tensor(Pauli(label=spec[i]))
     return op
 
@@ -65,15 +65,15 @@ def qft_dagger(circ, bits):
 ampl_lst = [-0.81261, 0.171201, 0.16862325, -0.2227965, 0.171201, 0.12054625, 0.17434925, 0.04532175,
 0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868]
 
+
 array = np.array(ampl_lst)
-B = np.diag(array)
+
+from sklearn.preprocessing import normalize
+narray = array / np.linalg.norm(array)
+
+B = np.diag(narray)
 
 B_op = Operator(B)
-print(B_op)
-
-
-def V():
-    return parse_pauli_spec(''.join(pauli_specs))
 
 
 # This assumes that the counting qubits are the first qubits in the circuit
@@ -113,13 +113,12 @@ aux = QuantumRegister(4, 'auxiliary')
 counting = QuantumRegister(2, 'counting')
 classical = ClassicalRegister(10, 'classical')
 
-
-
-circ = HartreeFock(some_args_here).construct_circuit('circuit', main)
+from qiskit.chemistry.components.initial_states import HartreeFock
+circ = HartreeFock(2, 1, 'parity').construct_circuit('circuit', main)
 circ.add_register(aux)
 circ.add_register(counting)
 circ.add_register(classical)
-
+circ.append(B_op, aux)
 phase_estimation(circ, main, counting, classical)
 circ.draw('mpl')
 plt.show()

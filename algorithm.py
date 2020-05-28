@@ -66,15 +66,18 @@ ampl_lst = [-0.81261, 0.171201, 0.16862325, -0.2227965, 0.171201, 0.12054625, 0.
 0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868]
 
 
+#print(B_op)
+
 array = np.array(ampl_lst)
 
-from sklearn.preprocessing import normalize
-narray = array / np.linalg.norm(array)
 
-B = np.diag(narray)
+B = np.diag(array)
 
-B_op = Operator(B)
+det = np.linalg.det(B)
 
+UB = B / det
+
+B_op = Operator(UB)
 
 # This assumes that the counting qubits are the first qubits in the circuit
 def phase_estimation(circ, main, counting, classical):
@@ -109,7 +112,7 @@ circ = HartreeFock(2, 1, 'parity').construct_circuit('circuit', main)
 circ.add_register(aux)
 circ.add_register(counting)
 circ.add_register(classical)
-circ.append(B_op, aux)
+#circ.append(B_op, aux)
 phase_estimation(circ, main, counting, classical)
 circ.draw('mpl')
 plt.show()

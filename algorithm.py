@@ -52,6 +52,21 @@ pauli_specs = [
     'ZZZZ',
 ]
 
+ampl_lst = [-0.81261, 0.171201, 0.16862325, -0.2227965, 0.171201, 0.12054625, 0.17434925, 0.04532175,
+0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868]
+
+
+#print(B_op)
+
+array = np.array(ampl_lst)
+
+
+B = np.diag(array)
+
+det = np.linalg.det(B)
+
+UB = B / det
+
 def qft_dagger(circ, bits):
     """n-qubit QFTdagger the first n qubits in circ"""
     n = len(bits)

@@ -48,10 +48,15 @@ We will simulate the hydrogen molecule, so we take the specific Hamiltonian of a
 \hat{H}_{B K}=&-0.81261 I+0.171201 \sigma_{0}^{z}+0.16862325 \sigma_{1}^{z}-0.2227965 \sigma_{2}^{z}+0.171201 \sigma_{1}^{z} \sigma_{0}^{z} \\
 &+0.12054625 \sigma_{2}^{z} \sigma_{0}^{z}+0.17434925 \sigma_{3}^{z} \sigma_{1}^{z}+0.04532175 \sigma_{2}^{x} \sigma_{1}^{z} \sigma_{0}^{x}+0.04532175 \sigma_{2}^{y} \sigma_{1}^{z} \sigma_{0}^{y} \\
 &+0.165868 \sigma_{2}^{z} \sigma_{1}^{z} \sigma_{0}^{z}+0.12054625 \sigma_{3}^{z} \sigma_{2}^{z} \sigma_{0}^{z}-0.2227965 \sigma_{3}^{z} \sigma_{2}^{z} \sigma_{1}^{z} \\
-&+0.04532175 \sigma_{3}^{z} \sigma_{2}^{x} \sigma_{1}^{z} \sigma_{0}^{x}+0.04532175 \sigma_{3}^{z} \sigma_{2}^{y} \sigma_{1}^{z} \sigma_{0}^{y}+0.165868 \sigma_{3}^{z} \sigma_{2}^{z} \sigma_{1}^{z} \sigma_{0}^{z}
+&+0.04532175 \sigma_{3}^{z} \sigma_{2}^{x} \sigma_{1}^{z}
+                                                                                                                                                                            \sigma_{0}^{x}+0.04532175 \sigma_{3}^{z} \sigma_{2}^{y} \sigma_{1}^{z} \sigma_{0}^{y}+0.165868 \sigma_{3}^{z} \sigma_{2}^{z} \sigma_{1}^{z} \sigma_{0}^{z} 
 \end{align*}
 
-Naively, we need a $4^4 = 256$-dimensional matrix to express this Hamiltonian. However, as there are only 16 terms, we can express this with four qubits by changing the basis to only represent 16 terms.  This means that each $\beta_j$ term corresponds to the $\ket{j}$ bitstring state.
+Naively, we need a $4^4 = 256$-dimensional matrix to express this
+Hamiltonian. However, as there are only 16 terms, we can express this
+with four qubits by changing the basis to only represent 16 terms.
+This means that each $\beta_j$ term corresponds to the $\ket{j}$
+bitstring state.
 
 First, we define three registers:  \verb|counting|, \verb|aux| and \verb|main|. We initialize the \verb|aux| register in the state $\ket{\beta}$. We do so by using the \verb|initialize| function of Qiskit, which takes an $n$-dimensional vector (in our case, the list of $\beta_j$ without their corresponding Pauli matrices) and initializes the $\log{n}$  qubits in the state corresponding to that vector.
 
@@ -126,10 +131,30 @@ this result was expected. All the code can be found in
 	\label{fig:results}
 \end{figure}
 
+\Cref{fig:results} shows a bar chart of the probabilities of the four
+different possible states that encode the phase of the unitary
+operator. Because of the nature of the circuits, these appear as 8-bit
+strings in the ticks of the horizontal axis, though only the last two
+qubits represent the phase. From this figure, it is clear the 00 is the
+most likely state of the phase. To decode the phase, we would have to
+apply the inverse quantum fourier transform to project the value of
+the phase of the unitary onto the two qubits. Once the phase is
+decoded, we can derive the energy of the hydrogen molecule by
+calculating the cosine of the phase.
 
+Deriving the energy of the molecule, however, still remains in theory
+for two reasons. First, since we are measuring only two qubits, we
+cannot expect the accuracy of the circuit to be
+promising. Furthermore, as mentioned previously, because our inital
+assumptions about the V operator were incorrect, we did not implement
+the intended unitary that would allow for such decoding.
 
-\printbibliography
-\end{document}
+This endeavor explores the application of more advanced quantum
+strategies on the publicly available IBM-computer. Although
+limitations in the implementaion hinder the success of the
+exploration, hopefully, at the very least, we lay the foundation here
+for a more nuanced understanding of applying quantum computing for
+molecular chemistry.
 
 %%% Local Variables:
 %%% mode: latex

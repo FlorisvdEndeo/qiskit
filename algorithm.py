@@ -90,6 +90,7 @@ def s_operator(circ, aux):
     circ.ccx(aux[0],aux[4],aux[3])
     circ.ccx(aux[1],aux[3],aux[2])
 
+from qiskit.extensions import Initialize
 ampl_lst = [-0.81261, 0.171201, 0.16862325, -0.2227965, 0.171201, 0.12054625, 0.17434925, 0.04532175,
 0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868]
 aux_state = Initialize(ampl_lst)

@@ -11,8 +11,36 @@
 
 \maketitle
 
+Phase estimation also cite \cite{nielsen}
+
 Phase Estimation~\cite{Qiskit-Textbook}
 Trouble: unitary B not 'normalized' due to inaccuracies of decimal numbers
+
+\begin{equation}
+	\bar H = \frac H{\mathcal{N}} = \sum_j|\beta_j|^2 P_j,
+\end{equation}
+
+This is Hydrogen Hamiltonian (stolen from \cite{seeley}
+$$
+\begin{aligned}
+\hat{H}_{B K}=&-0.81261 I+0.171201 \sigma_{0}^{z}+0.16862325 \sigma_{1}^{z}-0.2227965 \sigma_{2}^{z}+0.171201 \sigma_{1}^{z} \sigma_{0}^{z} \\
+&+0.12054625 \sigma_{2}^{z} \sigma_{0}^{z}+0.17434925 \sigma_{3}^{z} \sigma_{1}^{z}+0.04532175 \sigma_{2}^{x} \sigma_{1}^{z} \sigma_{0}^{x}+0.04532175 \sigma_{2}^{y} \sigma_{1}^{z} \sigma_{0}^{y} \\
+&+0.165868 \sigma_{2}^{z} \sigma_{1}^{z} \sigma_{0}^{z}+0.12054625 \sigma_{3}^{z} \sigma_{2}^{z} \sigma_{0}^{z}-0.2227965 \sigma_{3}^{z} \sigma_{2}^{z} \sigma_{1}^{z} \\
+&+0.04532175 \sigma_{3}^{z} \sigma_{2}^{x} \sigma_{1}^{z} \sigma_{0}^{x}+0.04532175 \sigma_{3}^{z} \sigma_{2}^{y} \sigma_{1}^{z} \sigma_{0}^{y}+0.165868 \sigma_{3}^{z} \sigma_{2}^{z} \sigma_{1}^{z} \sigma_{0}^{z}
+\end{aligned}
+$$
+
+where $\beta_j = \sqrt{|\alpha_j|/\mathcal{N}}$. Due to the nature of the scaling factor $\mathcal{N}$, $\sum_j \abs{\beta_j}^2 = 1.$
+\\\textcite{poulin} define $\beta, B, S$ and  $V$ as following:
+
+$$
+\ket\beta = B\ket 0 = \sum_j \beta_j \ket j$$
+$$
+S = (B (I - 2 \ket{0}\bra{0}) B^{\dagger}) \otimes I= (I-2\kb \beta \beta) \otimes I)$$
+\\
+$$
+V=\sum_{j}\ket{j}\bra{j} \otimes P_{j}
+$$
 
 \printbibliography
 \end{document}

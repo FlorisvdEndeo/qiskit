@@ -19,3 +19,4 @@ htmlcov
 .auctex-auto/
 *.bbl
 *.blg
+*.out

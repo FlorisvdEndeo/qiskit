@@ -38,7 +38,7 @@ The code for phase estimation was adapted from~\cite{Qiskit-Textbook}, which is 
 Trouble: unitary B not ``normalized'' due to inaccuracies of decimal numbers
 
 \begin{equation}
-	\bar H = \frac H{\mathcal{N}} = \sum_j|\beta_j|^2 P_j,
+	\bar H = \frac H{\mathcal{N}} = \sum_j\abs{\beta_j}^2 P_j,
 \end{equation}
 
 This is hydrogen Hamiltonian (stolen from~\cite{seeley})
@@ -51,9 +51,8 @@ This is hydrogen Hamiltonian (stolen from~\cite{seeley})
 \end{align*}
 
 where $\beta_j = \sqrt{\abs{\alpha_j}/\mathcal{N}}$. Due to the nature of the scaling factor $\mathcal{N}$, $\sum_j \abs{\beta_j}^2 = 1.$
-\\\textcite{poulin} define $\beta, B, S$ and  $V$ as following:
 
-
+\textcite{poulin} define $\beta, B, S$ and  $V$ as following:
 \[ S = (B (I - 2 \ket{0}\bra{0}) B^{\dagger}) \otimes I= (I-2\kb \beta \beta) \otimes I) \]
 \[ V=\sum_{j}\ket{j}\bra{j} \otimes P_{j} \]
 

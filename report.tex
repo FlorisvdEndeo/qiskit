@@ -20,28 +20,24 @@
 
 \maketitle
 
-The aim of this project was to implement the algorithm for computing the energy of a hydrogen atom as described by \textcite{poulin}. This algorithm consists of x steps:
-\begin{enumerate}
-	\item Create three registers: \verb|counting|, \verb|aux| and \verb|main|.
-	\item Put the \verb|aux| register in the state $\ket{\beta}$.
-	\item Put the \verb|main| register in an eigenstate of the Hamiltonian.
-	\item Estimate phase?
-	\item ???
-	\item Profit?
-\end{enumerate}
+The aim of this project was to implement the Spectrum by Quantum Walk algorithm for the quantum chemistry problem as described by \textcite{poulin}, specifically for the hydrogen atom. The conventional method for quantum simulation is to approximate the unitary evolution operator $U = \exp{-iHt}$. This algorithm circumvents having to approximate it, as the algorithm makes use of a unitary operator which is a function of the Hamiltonian. As a consequence, the energy of the system is encoded in the phase of that operator, so we can perform phase estimation to obtain the energy of the system. The operator is defined as
 
-The state $\ket\beta$ is given by
-\[ \ket\beta = B\ket 0 = \sum_j \beta_j \ket j. \]
-
-The code for phase estimation was adapted from~\cite{Qiskit-Textbook}, which is in turn based on~\textcite{nielsen}. The main complication in this part was that the original code was used 3 counting qubits, instead of 2. Therefore, we adapted it to support any number of qubits. Additionally, the bits had to be adapted to fits the registry structure.
-
-Trouble: unitary B not ``normalized'' due to inaccuracies of decimal numbers
-
-\begin{equation}
-	\bar H = \frac H{\mathcal{N}} = \sum_j\abs{\beta_j}^2 P_j,
+\begin{equation} \label{W}
+W = SV e^{i\pi}
 \end{equation}
 
-This is hydrogen Hamiltonian (stolen from~\cite{seeley})
+Where S and V are defined as following. We also define $\ket{\beta}$, which is the state we need to initialize the auxillary register to \cite{Poulin}.
+
+\[ S = (B (I - 2 \ket{0}\bra{0}) B^{\dagger}) \otimes I= (I-2\kb \beta \beta) \otimes I) \]
+\[ V=\sum_{j}\ket{j}\bra{j} \otimes P_{j} \]
+
+Here $\beta_j$ and $P_j$ are terms of the Hamiltonian, which after Jordan-Wigner encoding takes the form
+
+\begin{equation}
+	\bar H = \frac H{\mathcal{N}} = \sum_j\abs{\beta_j}^2 P_j.
+\end{equation}
+
+As we aim to simulate the hydrogen molecule, we take the specific Hamiltonian of the hydrogen molecule which is:
 
 \begin{align*}
 \hat{H}_{B K}=&-0.81261 I+0.171201 \sigma_{0}^{z}+0.16862325 \sigma_{1}^{z}-0.2227965 \sigma_{2}^{z}+0.171201 \sigma_{1}^{z} \sigma_{0}^{z} \\
@@ -50,11 +46,24 @@ This is hydrogen Hamiltonian (stolen from~\cite{seeley})
 &+0.04532175 \sigma_{3}^{z} \sigma_{2}^{x} \sigma_{1}^{z} \sigma_{0}^{x}+0.04532175 \sigma_{3}^{z} \sigma_{2}^{y} \sigma_{1}^{z} \sigma_{0}^{y}+0.165868 \sigma_{3}^{z} \sigma_{2}^{z} \sigma_{1}^{z} \sigma_{0}^{z}
 \end{align*}
 
-where $\beta_j = \sqrt{\abs{\alpha_j}/\mathcal{N}}$. Due to the nature of the scaling factor $\mathcal{N}$, $\sum_j \abs{\beta_j}^2 = 1.$
+Technically, we'd need a $4^4 = 256$-dimensional matrix to express this Hamiltonian. However, as there are only 16 terms, we can express this with four qubits, as we can change the basis to only represent those 16 terms.  This means that each $\beta_j$ term corresponds to the $\ket{j}$ bitstring state. \\
 
-\textcite{poulin} define $\beta, B, S$ and  $V$ as following:
-\[ S = (B (I - 2 \ket{0}\bra{0}) B^{\dagger}) \otimes I= (I-2\kb \beta \beta) \otimes I) \]
-\[ V=\sum_{j}\ket{j}\bra{j} \otimes P_{j} \]
+So first, we define three registers:  \verb|counting|, \verb|aux| and \verb|main|.
+
+We initialize the \verb|aux| register to the state $\ket{\beta}$. We do so by using the \textit{initialize} function of Qiskit, which takes an $n$-dimensional vector (in our case, the list of $\beta_j$ without their corresponding pauli matrices) and initializes the $\log{n}$  qubits in the state corresponding to that vector. \\
+
+Next, we have to put the \verb|main| register in the groundstate of the Hamiltonian. Usually for larger systems this is a laborious process as it requires a lot of computing power to calculate, due to the exponantially growing Hilbert space. However, hydrogen is a simple system and the groundstate has long been calculated classicaly, via the Hartree-Fock method. We prepare this register in the groundstate by using the Hartree function of the chemistry module of qiskit.
+
+Then, we'd have to create the controlled-$W$ operation \ref{W} by combining the $S$ and $V$ operations. Initially, we thought that the $S$ operator had the same gate operations as the Grover Diffusion operator, found in \cite{Qiskit-Textbook}. In that case, we could easily extrapolate the three-qubit example they gave to a four-qubit operation, by creating a four-qubit Toffoli gate with an extra ancillary qubit. Soon we realized that that is not the actual representation of $S$, as the operators are different in nature. We haven't been able to correctly implement $S$.
+
+Similarly, we thought that the $V$ operation was just a series of tensor products of the pauli matrices from the Hamiltonian. This is also not the case, as $V$ should be a controlled operation. We don't know how to implement $V$ either. \\
+
+The next step is performing phase estimation of $W$. Since we hadn't been able to implement $W$, we performed phase estimation of a random unitary. The code for phase estimation was adapted from~\cite{Qiskit-Textbook}, which is in turn based on~\textcite{nielsen}. The main complication in this part was that the original code used 3 counting qubits, instead of 2. Therefore, we adapted it to support any number of qubits. Additionally, the bits had to be adapted to fit the registry structure. After a series of controlled-$U$ operations, we apply inverse fourier transform to the \verb|counting| register. Then the state of the counting qubits should be $\ket{\varphi}$, where $\varphi$ is the phase of $U$. Then performing measurement on the counting qubits, projected on a register of classical qubits, gives us the phase and hence the energy. Below is the schematic of the circuit we implemented.
+
+\begin{figure}
+  \includegraphics[width=linewidth]{unknown-4.png}
+\end{figure}
+
 
 
 

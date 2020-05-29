@@ -92,23 +92,27 @@ def s_operator(circ, aux):
 
 from qiskit.extensions import Initialize
 ampl_lst = [-0.81261, 0.171201, 0.16862325, -0.2227965, 0.171201, 0.12054625, 0.17434925, 0.04532175,
-0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868]
-aux_state = Initialize(ampl_lst)
-aux_state.definition
-B_op = Operator(B)
-array = np.array(ampl_lst)
-B = np.diag(array)
+0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868, 0.0000]
+array = np.asarray(ampl_lst,  dtype=np.float)
+from sklearn import preprocessing
+newarray = array.reshape(1,-1)
+normalizedhm = preprocessing.normalize(newarray, norm='l2')
+normalized = normalizedhm[0]
+print(normalized)
+print(len(normalized))
+
 
 main = QuantumRegister(5, 'main')
 aux = QuantumRegister(4, 'auxiliary')
 counting = QuantumRegister(2, 'counting')
 classical = ClassicalRegister(10, 'classical')
 
+aux.Initialize(normalized) #this doesnt wor but i do want to initialize aux
 circ = HartreeFock(2, 1, 'parity').construct_circuit('circuit', main)
 circ.add_register(aux)
 circ.add_register(counting)
 circ.add_register(classical)
-circ.append(B_op, aux)
+#circ.append(B_op, aux)
 phase_estimation(circ, main, counting, classical)
 circ.draw('mpl')
 plt.show()

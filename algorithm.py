@@ -99,9 +99,6 @@ array = np.asarray(ampl_lst,  dtype=np.float)
 newarray = array.reshape(1,-1)
 normalizedhm = preprocessing.normalize(newarray, norm='l2')
 normalized = normalizedhm[0]
-print(normalized)
-print(len(normalized))
-
 
 main = QuantumRegister(5, 'main')
 aux = QuantumRegister(4, 'auxiliary')

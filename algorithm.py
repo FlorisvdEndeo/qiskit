@@ -1,19 +1,19 @@
 import numpy as np
 import math
 import pickle
+import argparse
+
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import normalize
 
-from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
-from qiskit import execute, BasicAer
+from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister, IBMQ, execute, BasicAer
 from qiskit.visualization import plot_histogram
 from qiskit.compiler import transpile
 from qiskit.quantum_info.operators import Operator, Pauli
 from qiskit.quantum_info import process_fidelity
 from qiskit.providers import ibmq
 from qiskit.extensions import Initialize
-import qiskit.extensions
 from qiskit.chemistry.components.initial_states import HartreeFock
 
 # One of the possible hamiltonians we could use:
@@ -100,42 +100,68 @@ newarray = array.reshape(1,-1)
 normalizedhm = preprocessing.normalize(newarray, norm='l2')
 normalized = normalizedhm[0]
 
-main = QuantumRegister(5, 'main')
-aux = QuantumRegister(4, 'auxiliary')
-counting = QuantumRegister(2, 'counting')
-classical = ClassicalRegister(10, 'classical')
+def full_circuit():
+    """This is the full circuit that can be expanded into the full algorithm"""
+    main = QuantumRegister(5, 'main')
+    aux = QuantumRegister(4, 'auxiliary')
+    counting = QuantumRegister(2, 'counting')
+    classical = ClassicalRegister(10, 'classical')
+    circ = HartreeFock(2, 1, 'parity').construct_circuit('circuit', main)
+    circ.add_register(aux)
+    circ.add_register(counting)
+    circ.add_register(classical)
+
+    instruction_set = circ.initialize(normalized, aux)
+    phase_estimation(circ, main, counting, classical)
+
+    # Does not have a stardard label
+    # Also the params mess up the drawing
+    instruction_set[0].label = 'init'
+    params = instruction_set[0].params
+    instruction_set[0].params = []
+    circ.draw('mpl')
+    plt.show()
+    instruction_set[0].params = params
 
 
-circ = HartreeFock(2, 1, 'parity').construct_circuit('circuit', main)
-circ.add_register(aux)
-circ.add_register(counting)
-circ.add_register(classical)
+def real_circuit():
+    """Run a smaller circuit on a real computer"""
+    # This circuit is smaller so we can run it at IBM
+    main = QuantumRegister(1, 'main')
+    counting = QuantumRegister(2, 'counting')
+    classical = ClassicalRegister(10, 'classical')
+    circ = QuantumCircuit(main, counting, classical)
+    phase_estimation(circ, main, counting, classical)
 
-instruction_set = circ.initialize(normalized, aux)
-phase_estimation(circ, main, counting, classical)
+    IBMQ.load_account()
+    provider = IBMQ.get_provider(hub='ibm-q')
+    provider.backends()
+    backend = ibmq.least_busy(provider.backends(filters=lambda b: b.configuration().n_qubits >= 3 and
+                                      not b.configuration().simulator and b.status().operational==True))
 
-# Does not have a stardard label
-# Also the params mess up the drawing
-instruction_set[0].label = 'init'
-params = instruction_set[0].params
-instruction_set[0].params = []
-circ.draw('mpl')
-plt.show()
-instruction_set[0].params = params
+    job = execute(circ, backend=backend, shots=8000)
+    result = job.result()
+    with open('results.pkl', 'wb') as f:
+        pickle.dumps(result)
+    plot_histogram(result.get_counts())
+    plt.show()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Run some quantum code')
+    parser.add_argument(
+        '-r', '--real',
+        help='Run on a real quantum computer',
+        action='store_true'
+    )
+    args = parser.parse_args()
+    if args.real:
+        real_circuit()
+    else:
+        full_circuit()
 
 # Hamiltonian = Operator([[-1.8310, 0.1813], [0.1813, -0.2537]])
 # circ.unitary(Hamiltonian, q)
 #circ.append(Hamiltonian)
 #circ.decompose().draw()
 #Hamiltonian.IsUnitary()
-
-
-### Running the code at IBM
-# backend = ibmq.least_busy()
-# qobj = assemble(transpile(circ, backend=backend), backend=backend)
-# job = backend.run(qobj)
-# result = job.result(refresh=True)
-# with open('results.pkl', 'wb') as f:
-#     pickle.dumps(result)
-# plot_histogram(result.get_counts())
-# plt.show()

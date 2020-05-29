@@ -94,6 +94,11 @@ register. This simplified circuit can be found below in \Cref{fig:simple_schemat
 	\label{fig:simple_schematic}
 \end{figure}
 
+\newpage
+
+After creating an account and generating an API token, we used the
+following code in \Cref{lst:real} to run it on an IBM-Q computer
+
 \begin{lstfloat}
 \begin{lstlisting}[language=Python, frame=single]
 IBMQ.load_account()
@@ -110,9 +115,12 @@ result = job.result()
 \label{lst:real}
 \end{lstfloat}
 
-After creating an account and generating an API token, we used the following code in \Cref{lst:real} to run it on an IBM-Q computer. The results can be found in \Cref{fig:results}. The angle that the operation in the circuit applies was smaller than our resolution, so this result was expected. All the code can be found in \url{https://github.com/FlorisvdEndeo/qiskit}.
+The results can be found in \Cref{fig:results}. The angle that the
+operation in the circuit applies was smaller than our resolution, so
+this result was expected. All the code can be found in
+\url{https://github.com/FlorisvdEndeo/qiskit}.
 
-\begin{figure}
+\begin{figure}[H]
 	\includegraphics[width=\linewidth]{results.png}
 	\caption{Results of the simplified algorithm.}
 	\label{fig:results}

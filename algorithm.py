@@ -1,6 +1,9 @@
 import numpy as np
 import math
 import pickle
+from sklearn import preprocessing
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import normalize
 
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
 from qiskit import execute, BasicAer
@@ -9,11 +12,9 @@ from qiskit.compiler import transpile
 from qiskit.quantum_info.operators import Operator, Pauli
 from qiskit.quantum_info import process_fidelity
 from qiskit.providers import ibmq
-
+from qiskit.extensions import Initialize
 import qiskit.extensions
 from qiskit.chemistry.components.initial_states import HartreeFock
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import normalize
 
 # One of the possible hamiltonians we could use:
 # HH2 = −0.81261I + 0.171201σ0z + 0.16862325σ1z − 0.2227965σ2z
@@ -90,11 +91,11 @@ def s_operator(circ, aux):
     circ.ccx(aux[0],aux[4],aux[3])
     circ.ccx(aux[1],aux[3],aux[2])
 
-from qiskit.extensions import Initialize
+
 ampl_lst = [-0.81261, 0.171201, 0.16862325, -0.2227965, 0.171201, 0.12054625, 0.17434925, 0.04532175,
 0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868, 0.0000]
 array = np.asarray(ampl_lst,  dtype=np.float)
-from sklearn import preprocessing
+
 newarray = array.reshape(1,-1)
 normalizedhm = preprocessing.normalize(newarray, norm='l2')
 normalized = normalizedhm[0]
@@ -107,15 +108,24 @@ aux = QuantumRegister(4, 'auxiliary')
 counting = QuantumRegister(2, 'counting')
 classical = ClassicalRegister(10, 'classical')
 
-aux.Initialize(normalized) #this doesnt wor but i do want to initialize aux
+
 circ = HartreeFock(2, 1, 'parity').construct_circuit('circuit', main)
+# circ = QuantumCircuit()
+# circ.add_register(main)
 circ.add_register(aux)
 circ.add_register(counting)
 circ.add_register(classical)
-#circ.append(B_op, aux)
+
+instruction_set = circ.initialize(normalized, aux)
+# Does not have a stardard label
+# Also the params mess up the drawing
+instruction_set[0].label = 'init'
+params = instruction_set[0].params
+instruction_set[0].params = []
 phase_estimation(circ, main, counting, classical)
 circ.draw('mpl')
 plt.show()
+instruction_set[0].params = params
 
 # Hamiltonian = Operator([[-1.8310, 0.1813], [0.1813, -0.2537]])
 # circ.unitary(Hamiltonian, q)

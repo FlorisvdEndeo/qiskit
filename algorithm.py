@@ -58,7 +58,7 @@ def qft_dagger(circ, bits):
     for j in range(n):
         for m in range(j):
             circ.cu1(-math.pi/float(2**(j-m)), bits[m], bits[j])
-        circ.h(j)
+        circ.h(bits[j])
 
 
 # This assumes that the counting qubits are the first qubits in the circuit
@@ -73,7 +73,7 @@ def phase_estimation(circ, main, counting, classical):
     repetitions = 1
     for bit in range(n):
         for i in range(repetitions):
-            circ.cu1(angle, counting[bit], main[0]);
+            circ.cu1(angle, counting[bit], main[0])
         repetitions *= 2
 
     # Do the inverse QFT:
@@ -81,7 +81,7 @@ def phase_estimation(circ, main, counting, classical):
 
     # Measure
     for bit in range(n):
-        circ.measure(counting[bit], classical[0])
+        circ.measure(counting[bit], classical[bit])
 
 
 def s_operator(circ, aux):
@@ -110,19 +110,18 @@ classical = ClassicalRegister(10, 'classical')
 
 
 circ = HartreeFock(2, 1, 'parity').construct_circuit('circuit', main)
-# circ = QuantumCircuit()
-# circ.add_register(main)
 circ.add_register(aux)
 circ.add_register(counting)
 circ.add_register(classical)
 
 instruction_set = circ.initialize(normalized, aux)
+phase_estimation(circ, main, counting, classical)
+
 # Does not have a stardard label
 # Also the params mess up the drawing
 instruction_set[0].label = 'init'
 params = instruction_set[0].params
 instruction_set[0].params = []
-phase_estimation(circ, main, counting, classical)
 circ.draw('mpl')
 plt.show()
 instruction_set[0].params = params

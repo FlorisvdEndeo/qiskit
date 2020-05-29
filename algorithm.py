@@ -120,6 +120,7 @@ def full_circuit():
     params = instruction_set[0].params
     instruction_set[0].params = []
     circ.draw('mpl')
+    plt.savefig('full_schematic.png')
     plt.show()
     instruction_set[0].params = params
 
@@ -132,6 +133,9 @@ def real_circuit():
     classical = ClassicalRegister(10, 'classical')
     circ = QuantumCircuit(main, counting, classical)
     phase_estimation(circ, main, counting, classical)
+    circ.draw('mpl')
+    plt.savefig('simple_schematic.png')
+    return
 
     IBMQ.load_account()
     provider = IBMQ.get_provider(hub='ibm-q')

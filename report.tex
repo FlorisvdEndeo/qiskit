@@ -4,6 +4,8 @@
 \usepackage{mathtools}
 \usepackage[hidelinks]{hyperref}
 \usepackage[giveninits=true]{biblatex}
+\usepackage{verbatim}
+
 \addbibresource{{bibliography.bib}}
 \def\kb#1#2{| #1 \rangle\!\langle #2 |}
 \def\kbtwo#1#2#3#4{|#1 \rangle\!\langle #2 | #3 \rangle\!\langle #4 | }
@@ -18,16 +20,28 @@
 
 \maketitle
 
-Phase estimation also cite \cite{nielsen}
+The aim of this project was to implement the algorithm for computing the energy of a hydrogen atom as described by \textcite{poulin}. This algorithm consists of x steps:
+\begin{enumerate}
+	\item Create three registers: \verb|counting|, \verb|aux| and \verb|main|.
+	\item Put the \verb|aux| register in the state $\ket{\beta}$.
+	\item Put the \verb|main| register in an eigenstate of the Hamiltonian.
+	\item Estimate phase?
+	\item ???
+	\item Profit?
+\end{enumerate}
 
-Phase Estimation~\cite{Qiskit-Textbook}
-Trouble: unitary B not 'normalized' due to inaccuracies of decimal numbers
+The state $\ket\beta$ is given by
+\[ \ket\beta = B\ket 0 = \sum_j \beta_j \ket j. \]
+
+The code for phase estimation was adapted from~\cite{Qiskit-Textbook}, which is in turn based on~\textcite{nielsen}. The main complication in this part was that the original code was used 3 counting qubits, instead of 2. Therefore, we adapted it to support any number of qubits. Additionally, the bits had to be adapted to fits the registry structure.
+
+Trouble: unitary B not ``normalized'' due to inaccuracies of decimal numbers
 
 \begin{equation}
 	\bar H = \frac H{\mathcal{N}} = \sum_j|\beta_j|^2 P_j,
 \end{equation}
 
-This is Hydrogen Hamiltonian (stolen from~\cite{seeley})
+This is hydrogen Hamiltonian (stolen from~\cite{seeley})
 
 \begin{align*}
 \hat{H}_{B K}=&-0.81261 I+0.171201 \sigma_{0}^{z}+0.16862325 \sigma_{1}^{z}-0.2227965 \sigma_{2}^{z}+0.171201 \sigma_{1}^{z} \sigma_{0}^{z} \\
@@ -39,24 +53,11 @@ This is Hydrogen Hamiltonian (stolen from~\cite{seeley})
 where $\beta_j = \sqrt{\abs{\alpha_j}/\mathcal{N}}$. Due to the nature of the scaling factor $\mathcal{N}$, $\sum_j \abs{\beta_j}^2 = 1.$
 \\\textcite{poulin} define $\beta, B, S$ and  $V$ as following:
 
-$$
-\ket\beta = B\ket 0 = \sum_j \beta_j \ket j$$
-$$
-S = (B (I - 2 \ket{0}\bra{0}) B^{\dagger}) \otimes I= (I-2\kb \beta \beta) \otimes I)$$
-\\
-$$
-V=\sum_{j}\ket{j}\bra{j} \otimes P_{j}
-$$
 
-Step 1:
+\[ S = (B (I - 2 \ket{0}\bra{0}) B^{\dagger}) \otimes I= (I-2\kb \beta \beta) \otimes I) \]
+\[ V=\sum_{j}\ket{j}\bra{j} \otimes P_{j} \]
 
-Create three registers, counting, aux and Physical
 
-Put aux in state $\ket{\beta}$
-
-Physical register in eigenstate $H_2$ with qiskit.chemistry hartreefock method
-
-Create operators V
 
 \printbibliography
 \end{document}

@@ -10,7 +10,7 @@ from qiskit.quantum_info.operators import Operator, Pauli
 from qiskit.quantum_info import process_fidelity
 from qiskit.providers import ibmq
 
-from qiskit.extensions import RXGate, XGate, CXGate
+import qiskit.extensions
 from qiskit.chemistry.components.initial_states import HartreeFock
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import normalize
@@ -92,6 +92,8 @@ def s_operator(circ, aux):
 
 ampl_lst = [-0.81261, 0.171201, 0.16862325, -0.2227965, 0.171201, 0.12054625, 0.17434925, 0.04532175,
 0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868]
+aux_state = Initialize(ampl_lst)
+aux_state.definition
 B_op = Operator(B)
 array = np.array(ampl_lst)
 B = np.diag(array)

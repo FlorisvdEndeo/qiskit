@@ -60,7 +60,17 @@ Then, we have to create the controlled-$W$ operation \cref{W} by combining the $
 
 Similarly, we thought that the $V$ operation was just a series of tensor products of the pauli matrices from the Hamiltonian. This is also not the case, as $V$ should be a controlled operation. We don't know how to implement $V$ either.
 
-The next step is performing phase estimation of $W$. Since we hadn't been able to implement $W$, we performed phase estimation of a random unitary. The code for phase estimation was adapted from~\cite{Qiskit-Textbook}, which is in turn based on~\textcite{nielsen}. The main complication in this part was that the original code used 3 counting qubits, instead of 2. Therefore, we adapted it to support any number of qubits. Additionally, the bits had to be adapted to fit the registry structure. After a series of controlled-$U$ operations, we apply an inverse fourier transform to the \verb|counting| register. Then the state of the counting qubits should be $\ket{\varphi}$, where $\varphi$ is the phase of $U$. Then performing measurement on the counting qubits, projected on a register of classical qubits, gives us the phase and hence the energy. A schematic of the circuit we implemented can be found in \cref{fig:full_schematic}.
+The next step is performing phase estimation of $W$. Since we hadn't
+been able to implement $W$, we performed phase estimation of a random
+unitary. The code for phase estimation was adapted
+from~\cite{Qiskit-Textbook}, which is in turn based
+on~\textcite{nielsen}. The main complication in this part was that the
+original code used 3 counting qubits, instead of 2. The IBM computer also
+only allows for three qubits. Despite this, we still adapted the code
+to support any number of qubits. Establishing that such circuit works
+would only make a compelling case for the scalability of the results
+of this research. Additionally, the bits had
+to be adapted to fit the registry structure. After a series of controlled-$U$ operations, we apply an inverse fourier transform to the \verb|counting| register. Then the state of the counting qubits should be $\ket{\varphi}$, where $\varphi$ is the phase of $U$. Then performing measurement on the counting qubits, projected on a register of classical qubits, gives us the phase and hence the energy. A schematic of the circuit we implemented can be found in \cref{fig:full_schematic}.
 
 \begin{figure}[htbp]
   \includegraphics[width=\linewidth]{{full_schematic.png}}
@@ -102,3 +112,8 @@ result = job.result()
 
 \printbibliography
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

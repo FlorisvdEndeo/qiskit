@@ -6,6 +6,7 @@
 \usepackage[giveninits=true]{biblatex}
 \usepackage{verbatim}
 \usepackage{graphicx}
+\usepackage{hyperref}
 \usepackage{cleveref}
 \usepackage{listings}
 \usepackage{float}
@@ -70,7 +71,10 @@ only allows for three qubits. Despite this, we still adapted the code
 to support any number of qubits. Establishing that such circuit works
 would only make a compelling case for the scalability of the results
 of this research. Additionally, the bits had
-to be adapted to fit the registry structure. After a series of controlled-$U$ operations, we apply an inverse fourier transform to the \verb|counting| register. Then the state of the counting qubits should be $\ket{\varphi}$, where $\varphi$ is the phase of $U$. Then performing measurement on the counting qubits, projected on a register of classical qubits, gives us the phase and hence the energy. A schematic of the circuit we implemented can be found in \cref{fig:full_schematic}.
+to be adapted to fit the registry structure. After a series of
+controlled-$U$ operations, we apply an inverse fourier transform to
+the \verb|counting| register. Then the state of the counting qubits
+should be $\ket{\varphi}$, where $\varphi$ is the phase of $U$, and performing measurement on the counting qubits, projected on a register of classical qubits, gives us the phase and hence the energy. A schematic of the circuit we implemented can be found in \Cref{fig:full_schematic}.
 
 \begin{figure}[htbp]
   \includegraphics[width=\linewidth]{{full_schematic.png}}
@@ -78,7 +82,11 @@ to be adapted to fit the registry structure. After a series of controlled-$U$ op
 	\label{fig:full_schematic}
 \end{figure}
 
-To run the code on a quantum computer, the circuit was significantly simplified in order to run it on 3 qubits. The result was a circuit that performs a phase estimation with a single qubit in the \verb|main| register and 2 qubits in the \verb|counting| register. After creating an account and generating an API token, we used the following code in \cref{lst:real} to run it on an IBM-Q computer. The results can be found in \cref{fig:results}. The angle that the operation in the circuit applies was smaller than our resolution, so this result was expected. All the code can be found in \url{https://github.com/FlorisvdEndeo/qiskit}.
+To run the code on a quantum computer, the circuit was significantly
+simplified in order to run it on 3 qubits. The result was a circuit
+that performs a phase estimation with a single qubit in the
+\verb|main| register and 2 qubits in the \verb|counting|
+register. This simplified circuit can be found below in \Cref{fig:simple_schematic}. 
 
 \begin{figure}[htbp]
   \includegraphics[width=\linewidth]{{simple_schematic.png}}
@@ -101,6 +109,8 @@ result = job.result()
 \caption{Code for running on the IBM computer}
 \label{lst:real}
 \end{lstfloat}
+
+After creating an account and generating an API token, we used the following code in \Cref{lst:real} to run it on an IBM-Q computer. The results can be found in \Cref{fig:results}. The angle that the operation in the circuit applies was smaller than our resolution, so this result was expected. All the code can be found in \url{https://github.com/FlorisvdEndeo/qiskit}.
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{results.png}

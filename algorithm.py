@@ -1,20 +1,14 @@
-# from qiskit.providers import BaseBackend
-# from qiskit.aqua import QuantumInstance
-# from qiskit.aqua.algorithms import VQE
-# from qiskit.aqua.operators import LegacyBaseOperator, Z2Symmetries
-# from qiskit.aqua.components.optimizers import Optimizer
-# from qiskit.aqua.components.variational_forms import VariationalForm
-# from qiskit.aqua.utils.validation import validate_min, validate_in_set
-#
-# from qiskit import *
 import numpy as np
 import math
+import pickle
 
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
 from qiskit import execute, BasicAer
+from qiskit.visualization import plot_histogram
 from qiskit.compiler import transpile
 from qiskit.quantum_info.operators import Operator, Pauli
 from qiskit.quantum_info import process_fidelity
+from qiskit.providers import ibmq
 
 from qiskit.extensions import RXGate, XGate, CXGate
 from qiskit.chemistry.components.initial_states import HartreeFock
@@ -51,9 +45,6 @@ pauli_specs = [
     'YZYZ',
     'ZZZZ',
 ]
-
-
-
 
 
 def qft_dagger(circ, bits):
@@ -99,18 +90,11 @@ def s_operator(circ, aux):
     circ.ccx(aux[0],aux[4],aux[3])
     circ.ccx(aux[1],aux[3],aux[2])
 
-
-import qiskit.extensions
 ampl_lst = [-0.81261, 0.171201, 0.16862325, -0.2227965, 0.171201, 0.12054625, 0.17434925, 0.04532175,
 0.04532175, 0.165868, 0.12054625, - 0.2227965, 0.04532175, 0.04532175, 0.165868]
-
-B = np.diag(array)
 B_op = Operator(B)
-
 array = np.array(ampl_lst)
-
-
-
+B = np.diag(array)
 
 main = QuantumRegister(5, 'main')
 aux = QuantumRegister(4, 'auxiliary')
@@ -133,21 +117,12 @@ plt.show()
 #Hamiltonian.IsUnitary()
 
 
-# def diffuser(circuit):
-#     """Apply inversion about the average step of Grover's algorithm."""
-#     """ three qubits version of the S operator"""
-#     qubits = circuit.qubits
-#     nqubits = len(qubits)
-#
-#     for q in range(nqubits):
-#         circuit.h(q)
-#         circuit.x(q)
-#
-#     # Do controlled-Z
-#     circuit.h(2)
-#     circuit.ccx(0,1,2)
-#     circuit.h(2)
-#
-#     for q in range(nqubits):
-#         circuit.x(q)
-#         circuit.h(q)
+### Running the code at IBM
+# backend = ibmq.least_busy()
+# qobj = assemble(transpile(circ, backend=backend), backend=backend)
+# job = backend.run(qobj)
+# result = job.result(refresh=True)
+# with open('results.pkl', 'wb') as f:
+#     pickle.dumps(result)
+# plot_histogram(result.get_counts())
+# plt.show()

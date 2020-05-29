@@ -65,32 +65,6 @@ The next step is performing phase estimation of $W$. Since we hadn't been able t
 \end{figure}
 
 
-\begin{enumerate}
-	\item Create three registers: \verb|counting|, \verb|aux| and \verb|main|.
-	\item Put the \verb|aux| register in the state $\ket{\beta}$.
-	\item Put the \verb|main| register in an eigenstate of the Hamiltonian.
-	\item Estimate phase?
-	\item ???
-	\item Profit?
-\end{enumerate}
-
-The state $\ket\beta$ is given by
-\[ \ket\beta = B\ket 0 = \sum_j \beta_j \ket j. \]
-
-The code for phase estimation was adapted from~\cite{Qiskit-Textbook}, which is in turn based on~\textcite{nielsen}. The main complication in this part was that the original code was used 3 counting qubits, instead of 2. Therefore, we adapted it to support any number of qubits. Additionally, the bits had to be adapted to fits the registry structure.
-
-Trouble: unitary B not ``normalized'' due to inaccuracies of decimal numbers
-
-\begin{equation}
-	\bar H = \frac H{\mathcal{N}} = \sum_j\abs{\beta_j}^2 P_j,
-\end{equation}
-
-This is hydrogen Hamiltonian (stolen from~\cite{seeley})
-
-
-
-
-
 
 
 \printbibliography
